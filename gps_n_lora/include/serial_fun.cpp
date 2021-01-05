@@ -8,6 +8,7 @@ string get_gps(Serial &gps_serial){
     char *read_index = read_buf;
     int buf_stack = 0;
     bool flag = true;
+    bool colon = false;
     bool data_start = true;
     memset(read_buf, '\0', sizeof(MAX_BUF));
     while(data_start){
@@ -36,9 +37,17 @@ string get_gps(Serial &gps_serial){
 						flag = false;
 						data_start = false;
 					}
+					else if((*read_index) == ','){
+						if(!colon){
+							read_index++;
+							buf_stack++;
+							colon = true;
+						}
+					}
 					else{
 						read_index++;
 						buf_stack++;
+						colon = false;
 					}
 				}
 				else{
