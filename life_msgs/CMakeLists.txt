@@ -14,6 +14,7 @@ add_message_files(
   IR.msg
   Motor.msg
   Motor_set.msg
+  Cam.msg
 )
 
 #add_service_files(
