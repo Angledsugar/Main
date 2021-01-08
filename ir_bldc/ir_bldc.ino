@@ -7,6 +7,8 @@
 int left_power = 1500;
 int right_power = 1500;
 float IR_data[IR_NUM];
+int IR[IR_NUM][FILTER_SIZE];
+int IR_index = 0;
 Servo left_m,right_m;
 
 ros::NodeHandle  nh;
@@ -48,13 +50,11 @@ void loop()
   ReadIR();
   IRpub.publish(&IR_msg);
   nh.spinOnce();
-  delay(10);
+  delay(1);
 }
 
 
 void ReadIR(){
-    static int IR[IR_NUM][FILTER_SIZE];
-    static int IR_index = 0;
     float mean[IR_NUM] {};
     IR[0][IR_index] = analogRead(A0);
     IR[1][IR_index] = analogRead(A1);  
