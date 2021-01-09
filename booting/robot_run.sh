@@ -10,4 +10,3 @@ sleep 2
 
 rosrun gps_n_lora gps_n_lora_node &
 
-rosrun hello hello 
