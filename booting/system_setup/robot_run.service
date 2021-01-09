@@ -1,0 +1,9 @@
+[Unit]
+Description=RoBot Run
+
+[Service]
+ExecStart=/home/ubuntu/life_ws/src/booting/robot_run.sh
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

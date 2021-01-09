@@ -9,3 +9,5 @@ sudo systemctl stop {Project file name}
 sudo systemctl status {Project file name}
 
 sudo systemctl enable {Project file name}
+
+chomod 777 {Project file name}.sh
