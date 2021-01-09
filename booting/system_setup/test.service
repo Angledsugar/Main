@@ -1,0 +1,9 @@
+[Unit]
+Description=Bringup ROS launch Test
+
+[Service]
+ExecStart=/home/ubuntu/life_ws/src/booting/test.sh
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
