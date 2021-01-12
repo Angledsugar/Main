@@ -16,6 +16,7 @@ add_message_files(
   Motor_set.msg
   Cam.msg
   Status.msg
+  Robot_state.msg
 )
 
 #add_service_files(

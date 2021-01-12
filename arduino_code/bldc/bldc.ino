@@ -8,15 +8,15 @@ Servo left_m,right_m;
 
 ros::NodeHandle  nh;
 void messageCb( const life_msgs::Motor_set& msg){
-    float l_data = msg.left.speed.data;
-    float r_data = msg.right.speed.data;
-    if(msg.left.dir.data){
+    float l_data = msg.left.speed;
+    float r_data = msg.right.speed;
+    if(msg.left.dir){
       left_power = 1500 + 500*l_data/100;  
     }
     else{
       left_power = 1500 - 500*l_data/100;  
     }
-    if(msg.right.dir.data){
+    if(msg.right.dir){
       right_power = 1500 + 500*r_data/100;   
     }
     else{
@@ -26,7 +26,7 @@ void messageCb( const life_msgs::Motor_set& msg){
     right_m.writeMicroseconds(right_power);
 }
 
-ros::Subscriber<life_msgs::Motor_set> sub("/life/motor", &messageCb );
+ros::Subscriber<life_msgs::Motor_set> sub("/life/Motor", &messageCb );
 
 
 void setup()

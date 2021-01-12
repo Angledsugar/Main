@@ -18,7 +18,6 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  /home/ubuntu/life_ws/src/serial
 )
 
 add_executable(${PROJECT_NAME}_node src/main.cpp)

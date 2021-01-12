@@ -1,2 +1,2 @@
-std_msgs/Float64 angle
-std_msgs/Float64 temperature
+float64 angle
+float64 temperature
