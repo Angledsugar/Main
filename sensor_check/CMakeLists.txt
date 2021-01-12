@@ -3,9 +3,7 @@ project(sensor_check)
 
 add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
   roscpp
-  sensor_msgs
   std_msgs
   life_msgs
   message_generation
@@ -14,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES sensor_check life_msgs
-  CATKIN_DEPENDS generate_messages geometry_msgs roscpp sensor_msgs std_msgs
+  CATKIN_DEPENDS roscpp std_msgs generate_messages
   DEPENDS system_lib
 )
 

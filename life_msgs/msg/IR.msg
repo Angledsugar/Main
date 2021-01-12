@@ -1,3 +1,5 @@
-std_msgs/Float64 ir1
-std_msgs/Float64 ir2
-std_msgs/Float64 ir3
+float32 ir1
+float32 ir2
+float32 ir3
+float32 ir4
+float32 ir5

@@ -1,8 +1,0 @@
-/home/ubuntu/catkin_ws/src/flir_lepton/flir_lepton_purethermal2/libuvc/build/CMakeFiles/install/strip.dir
-/home/ubuntu/catkin_ws/src/flir_lepton/flir_lepton_purethermal2/libuvc/build/CMakeFiles/install/local.dir
-/home/ubuntu/catkin_ws/src/flir_lepton/flir_lepton_purethermal2/libuvc/build/CMakeFiles/install.dir
-/home/ubuntu/catkin_ws/src/flir_lepton/flir_lepton_purethermal2/libuvc/build/CMakeFiles/list_install_components.dir
-/home/ubuntu/catkin_ws/src/flir_lepton/flir_lepton_purethermal2/libuvc/build/CMakeFiles/rebuild_cache.dir
-/home/ubuntu/catkin_ws/src/flir_lepton/flir_lepton_purethermal2/libuvc/build/CMakeFiles/uvcstatic.dir
-/home/ubuntu/catkin_ws/src/flir_lepton/flir_lepton_purethermal2/libuvc/build/CMakeFiles/edit_cache.dir
-/home/ubuntu/catkin_ws/src/flir_lepton/flir_lepton_purethermal2/libuvc/build/CMakeFiles/uvc.dir

@@ -18,6 +18,7 @@ class Serial{
 		~Serial();
 		int swrite(const char* item,int size);
 		int sread(char* buf,int size = sizeof(char));
+		bool good;
 	private:
 	int serial_port;
 };
@@ -29,6 +30,7 @@ Serial::Serial(string port_name,int baud_rate){
 	serial_port = open(port_name.c_str(), O_RDWR);
 	cout<<"Opening "<<port_name<<" port..."<<endl;
     if (serial_port < 0) {
+    	good = false;
 		printf("Error %i from open: %s\n", errno, strerror(errno));
     }
     printf("Succesed open port...\n");
@@ -38,6 +40,7 @@ Serial::Serial(string port_name,int baud_rate){
     // Read in existing settings, and handle any error
     printf("Setting port tty...\n");
     if(tcgetattr(serial_port, &tty) != 0) {
+    	good = false;
         printf("Error %i from tcgetattr: %s\n", errno, strerror(errno));
     }
 	printf("Succesed set port tty...\n");
@@ -64,9 +67,11 @@ Serial::Serial(string port_name,int baud_rate){
     }
     printf("Setting tty serial...\n");
     if (tcsetattr(serial_port, TCSANOW, &tty) != 0) {
+    	good = false;
         printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
     }
     printf("!! ALL setting end !!\n");
+    good = true;
 }
 
 Serial::~Serial(){
