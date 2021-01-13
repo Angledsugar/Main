@@ -5,7 +5,7 @@ int main(int argc,char** argv){
 	ros::init(argc,argv,"Core");
 	ros::NodeHandle nh;
 	ros::Subscriber sub1 = nh.subscribe("/life/IR", 1 ,IR_CB);
-    ros::Subscriber sub2 = nh.subscribe("/life/Cam", 1 ,Cam_CB);
+	ros::Subscriber sub2 = nh.subscribe("/life/Cam", 1 ,Cam_CB);
     ros::Subscriber sub3 = nh.subscribe("/life/Robot_state", 1 ,Imu_CB);
     ros::Publisher motor = nh.advertise<life_msgs::Motor_set>("/life/Motor",1);
     ros::Publisher st_pub = nh.advertise<life_msgs::Motor_set>("/life/Status/Robot",1);
