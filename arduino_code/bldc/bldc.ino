@@ -10,17 +10,23 @@ ros::NodeHandle  nh;
 void messageCb( const life_msgs::Motor_set& msg){
     float l_data = msg.left.speed;
     float r_data = msg.right.speed;
-    if(msg.left.dir){
-      left_power = 1500 + 500*l_data/100;  
+    if(msg.left.dir && l_data > 0){
+      left_power = 1541 + 459*l_data/100;  
+    }
+    else if(l_data > 0){
+      left_power = 1460 - 460*l_data/100;  
     }
     else{
-      left_power = 1500 - 500*l_data/100;  
+      left_power = 1500;
     }
-    if(msg.right.dir){
-      right_power = 1500 + 500*r_data/100;   
+    if(!msg.right.dir && r_data > 0){
+      right_power = 1541 + 459*r_data/100;   
+    }
+    else if(r_data > 0){
+      right_power = 1460 - 460*r_data/100;  
     }
     else{
-      right_power = 1500 - 500*r_data/100;  
+      right_power = 1500;
     }
     left_m.writeMicroseconds(left_power);
     right_m.writeMicroseconds(right_power);

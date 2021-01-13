@@ -2,9 +2,9 @@
 #include <wiringPi.h>
 
 #include "life_msgs/Status.h"
-#define RED 17
+#define BLUE 17
 #define GREEN 27
-#define BLUE 22
+#define RED 22
 
 void IR(const life_msgs::Status& msg);
 void Cam(const life_msgs::Status& msg);
