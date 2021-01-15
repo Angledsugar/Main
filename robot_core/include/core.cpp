@@ -16,6 +16,7 @@ void Core::prepare(){
 		if(imu_state == IMU_DROPPED){
 			step_set_(DROPPED);
 		}
+		find_person();
 	}
 }
 
@@ -23,6 +24,9 @@ void Core::prepare(){
 void Core::find_person(){
 	if(person.result){
 		step_set_(MOVE_PERSON);
+	}
+	else{
+		motor_move(2,-2);
 	}
 }
 
@@ -47,7 +51,9 @@ void Core::maintain(){
 
 
 void Core::clear_step(){
-	step_ = 0;
+	ROS_INFO("ERROR STATE : %d ",n);
+	ROS_INFO("STATE RESET");
+	step_ = TURN_ON;
 }
 
 const int Core::get_step(){
