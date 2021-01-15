@@ -5,12 +5,14 @@ Robot::Robot() {
 	// Subscriber setting
 	ir_sub_ = nh_.subscribe("/life/IR", 1 , &Robot::IR_CB , this); 
 	cam_sub_ = nh_.subscribe("/life/Cam", 1 , &Robot::Cam_CB , this);
-	state_sub_ = nh_.subscribe("/life/Robot_state", 1 , &Robot::Imu_CB,this);
+	imu_sub_ = nh_.subscribe("/life/Imu", 1 , &Robot::Imu_CB,this);
+	state_sub_ = nh_.subscribe("/life/Status/Robot", 1 , &Robot::Sensor_CB,this);
+	
 	
 	// Publisher setting
 	motor_pub_ = nh_.advertise<life_msgs::Motor_set>("/life/Motor",1); 
-	st_pub_ = nh_.advertise<life_msgs::Motor_set>("/life/Status/Robot",1); 
-	person_.is_close = false;
+	person.result = false;
+	person.is_close = false;
 	ROS_INFO("Subscriber and Publisher is ok");
 }
 
@@ -22,22 +24,30 @@ Robot::~Robot(){
 void Robot::IR_CB(const life_msgs::IR &msg){
 	ROS_INFO("IR MESSAGE GET");
 	if(msg.ir1 < 700 || msg.ir2 < 700 || msg.ir3 < 700 || msg.ir4 < 700 || msg.ir5 < 700)
-		person_.is_close = true;
+		person.is_close = true;
 	else
-		person_.is_close = false;
+		person.is_close = false;
 }
 
 
 void Robot::Cam_CB(const life_msgs::Cam &msg){
 	ROS_INFO("CAMERA MESSAGE GET");
-	person_.angle = msg.angle * CAM_FOV/2;
+	person.result = msg.result;
+	person.angle = msg.angle * CAM_FOV/2;
 }
 
 
-void Robot::Imu_CB(const life_msgs::Robot_state &msg){
+void Robot::Imu_CB(const life_msgs::Imu &msg){
 	ROS_INFO("IMU MESSAGE GET");
-	robot_ = msg;
+	imu_state = msg.state;
 }
+
+
+void Robot::Sensor_CB(const life_msgs::Status &msg){
+	ROS_INFO("ROBOT STATUS GET");
+	robot_state = msg.good;
+}
+
 
 void Robot::send_gps(bool mode){
 

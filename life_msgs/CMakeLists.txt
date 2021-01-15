@@ -16,7 +16,7 @@ add_message_files(
   Motor_set.msg
   Cam.msg
   Status.msg
-  Robot_state.msg
+  Imu.msg
 )
 
 #add_service_files(
@@ -29,7 +29,7 @@ generate_messages(
 )
 
 catkin_package(
-   CATKIN_DEPENDS std_msgs message_runtime
+   CATKIN_DEPENDS std_msgs message_runtime sensor_msgs
 )
 
 include_directories(

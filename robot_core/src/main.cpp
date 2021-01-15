@@ -7,19 +7,19 @@ int main(int argc,char** argv){
     	std::cout<<"ROBOT MAIN IS READY\n";
 	while(ros::ok()){
 		switch(life.get_step()){
-			case 0 :
+			case TURN_ON :
 				life.prepare();
 				break;
-			case 1 :
+			case DROPPED :
 				life.find_person();
 				break;
-			case 2 :
+			case MOVE_PERSON :
 				life.go_to_person();
 				break;
-			case 3 :
+			case WAIT_FOR_PERSON_GRAPPING :
 				life.person_grap();
 				break;
-			case 4 :
+			case WAIT_LIFE_GUARD :
 				life.maintain();
 				break;
 			default :

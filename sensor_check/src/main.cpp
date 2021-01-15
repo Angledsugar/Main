@@ -29,6 +29,9 @@ int main (int argc, char **argv)
     ros::Subscriber sub4 = nh.subscribe("/life/Status/Motor", 1 ,Motor);
     ros::Subscriber sub5 = nh.subscribe("/life/Status/GPS", 1 ,GPS);
     
+    ros::Publisher pub = nh.advertise<life_msgs::Status>("/life/Status/Robot",1); 
+    
+    life_msgs::Status robot_state;
     wiringPiSetupGpio();
     pinMode(RED, OUTPUT);
     pinMode(GREEN, OUTPUT);
@@ -45,12 +48,16 @@ int main (int argc, char **argv)
     		digitalWrite(RED,LOW);
     		digitalWrite(GREEN,LOW);
     		digitalWrite(BLUE,HIGH);
-    		ROS_INFO("ALL SENSOR IS GOOD");	
+    		ROS_INFO("ALL SENSOR IS GOOD");
+    		robot_state.good = true;
+    		pub.publish(robot_state);
     	}
     	else{
     		digitalWrite(RED,LOW);
     		digitalWrite(GREEN,HIGH);
     		digitalWrite(BLUE,LOW);
+    		robot_state.good = false;
+    		pub.publish(robot_state);
     	}
         ros::Duration(1).sleep();
         ros::spinOnce();
