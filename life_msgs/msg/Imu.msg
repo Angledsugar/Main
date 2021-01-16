@@ -1,2 +1,3 @@
 int32 state
-sensor_msgs/Imu data
+life_msgs/Imu_Accel accel
+life_msgs/Imu_Pose pose

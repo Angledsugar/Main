@@ -51,7 +51,6 @@ void Core::maintain(){
 
 
 void Core::clear_step(){
-	ROS_INFO("ERROR STATE : %d ",n);
 	ROS_INFO("STATE RESET");
 	step_ = TURN_ON;
 }
@@ -84,7 +83,7 @@ void Core::step_set_(int n){
 			step_ = WAIT_LIFE_GUARD;
 			break;
 		default :
-			ROS_INFO("ERROR STATE : %d ",n);
+			ROS_INFO("ERROR STATE : %d ", n );
 			ROS_INFO("STATE RESET");
 			step_ = TURN_ON;
 			break;

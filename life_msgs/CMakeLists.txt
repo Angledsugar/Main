@@ -17,6 +17,8 @@ add_message_files(
   Cam.msg
   Status.msg
   Imu.msg
+  Imu_Accel.msg
+  Imu_Pose.msg
 )
 
 #add_service_files(
