@@ -2,6 +2,12 @@
 #define CORE_
 #include "robot_core.h"
 
+#include <wiringPi.h>
+#define BLUE 22
+#define GREEN 27
+#define RED 17
+
+
 #define TURN_ON 0 
 #define DROPPED 1
 #define MOVE_PERSON 2

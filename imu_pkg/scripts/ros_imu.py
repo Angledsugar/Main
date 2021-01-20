@@ -8,6 +8,7 @@ import math as m
 from imu_madgwick import Imu_madgwick
 from life_msgs.msg import Imu
 import math
+
 class Imu_ros:
     def __init__(self) :
         self.imu_sensor = Imu_madgwick()
@@ -37,8 +38,13 @@ class Imu_ros:
         self.imu_data.accel.y = self.f_x
         self.imu_data.accel.x = self.f_y
         self.imu_data.accel.z = self.f_z
+        self.Force = (abs(self.imu_data.accel.x) + abs(self.imu_data.accel.y) + abs(self.imu_data.accel.z))*0.25
+        if self.Force > 18 : 
+            self.imu_data.state = 1
+        else :
+            self.imu_data.state = 0
+        print("Force : ",self.Force)
         
-        print("x : {0} , y: {1} , z : {2}".format(self.f_y,self.f_x,self.f_z))
         self.pub.publish(self.imu_data)
     def Rx(self,theta):
         return np.matrix([[1,0,0],[ 0, m.cos(theta),-m.sin(theta)],[ 0, m.sin(theta), m.cos(theta)]])
