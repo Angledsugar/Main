@@ -8,6 +8,7 @@ import math as m
 from imu_madgwick import Imu_madgwick
 from life_msgs.msg import Imu
 import math
+import time
 
 class Imu_ros:
     def __init__(self) :
@@ -39,11 +40,17 @@ class Imu_ros:
         self.imu_data.accel.x = self.f_y
         self.imu_data.accel.z = self.f_z
         self.Force = (abs(self.imu_data.accel.x) + abs(self.imu_data.accel.y) + abs(self.imu_data.accel.z))*0.25
-        if self.Force > 18 : 
-            self.imu_data.state = 1
-        else :
+        if self.imu_data.state == 0 :
+            if self.Force > 18 : 
+                self.imu_data.state = 1
+                time.sleep(1)
+        elif self.imu_data.state == 1 :
+            if self.Force > 15 :
+                self.imu_data.state = 2
+                time.sleep(1) 
+        elif self.imu_data.state == 2 : 
             self.imu_data.state = 0
-        print("Force : ",self.Force)
+        print("STATE : ",self.imu_data.state,"Force : ",self.Force)
         
         self.pub.publish(self.imu_data)
     def Rx(self,theta):

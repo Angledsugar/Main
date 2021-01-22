@@ -25,14 +25,14 @@ void Core::prepare(){
         digitalWrite(BLUE,HIGH);
         if(imu_state == IMU_DROPPED){
             //step_set_(DROPPED);
+            step_set_(WAIT_FOR_PERSON_GRAPPING);
             digitalWrite(RED,LOW);
             digitalWrite(GREEN,HIGH);
             digitalWrite(BLUE,LOW);
-            ros::Duration(1).sleep();
 		}
 	}
 	else{
-	    digitalWrite(RED,HIGH);
+        digitalWrite(RED,HIGH);
         digitalWrite(GREEN,LOW);
         digitalWrite(BLUE,LOW);
 	}
@@ -59,7 +59,12 @@ void Core::go_to_person(){
 
 void Core::person_grap(){
 	if(imu_state == IMU_GRAPPED){
-		step_set_(WAIT_LIFE_GUARD);
+        //step_set_(WAIT_LIFE_GUARD);
+        step_set_(TURN_ON);
+        digitalWrite(RED,HIGH);
+        digitalWrite(GREEN,HIGH);
+        digitalWrite(BLUE,HIGH);
+        ros::Duration(3).sleep();
 	}
 }
 
