@@ -65,6 +65,10 @@ Serial::Serial(string port_name,int baud_rate){
 		cfsetispeed(&tty, B9600);
 		cfsetospeed(&tty, B9600);
     }
+    else if(baud_rate == 115200){
+    	cfsetispeed(&tty, B115200);
+		cfsetospeed(&tty, B115200);	
+    }
     printf("Setting tty serial...\n");
     if (tcsetattr(serial_port, TCSANOW, &tty) != 0) {
     	good = false;
