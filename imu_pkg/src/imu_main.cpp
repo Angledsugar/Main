@@ -1,27 +1,32 @@
 #include "imu.h"
 #include "ros/ros.h"
-#include "life_msgs/Imu.h"
+#include "sensor_msgs/Imu.h"
 int main(int argc, char** argv){
 	ros::init(argc,argv,"IMU_NODE");
 	ros::NodeHandle nh;
-	ros::Publisher pub = nh.advertise<life_msgs::Imu>("/Imu",1);
-	life_msgs::Imu imu_msg;
+	ros::Publisher pub = nh.advertise<sensor_msgs::Imu>("/imu/data_raw",1);
+	sensor_msgs::Imu imu_msg;
 	IMU my_ahrs("/dev/ttyACM0");
+	ROS_INFO("SETTING IMU...");
 	if(!my_ahrs.initialize())
 		handle_error("Can't initialize imu");
+	ROS_INFO("START NODE");
 	while(ros::ok()){
-		imu_msg.vel.x = 0;
-		imu_msg.vel.y = 0;
-		imu_msg.vel.z = 0;
+		imu_msg.header.stamp = ros::Time::now();
+		
+		imu_msg.orientation.x = my_ahrs.q.x;
+		imu_msg.orientation.y = my_ahrs.q.y;
+		imu_msg.orientation.z = my_ahrs.q.z;
+		imu_msg.orientation.w = my_ahrs.q.w;
+		
+		imu_msg.angular_velocity.x = my_ahrs.imu.gx;
+		imu_msg.angular_velocity.y = my_ahrs.imu.gy;
+		imu_msg.angular_velocity.z = my_ahrs.imu.gz;
 
-		imu_msg.accel.x = my_ahrs.rotated.r_ax;
-		imu_msg.accel.y = my_ahrs.rotated.r_ay;
-		imu_msg.accel.z = my_ahrs.rotated.r_az;
-
-		imu_msg.pose.roll = my_ahrs.e.roll;		
-		imu_msg.pose.pitch = my_ahrs.e.pitch;
-		imu_msg.pose.yaw = my_ahrs.e.yaw;
-
+		imu_msg.linear_acceleration.x = my_ahrs.imu.ax;
+		imu_msg.linear_acceleration.y = my_ahrs.imu.ay;
+		imu_msg.linear_acceleration.z = my_ahrs.imu.az;
+		
 		pub.publish(imu_msg);
 	}
 	return 0;
