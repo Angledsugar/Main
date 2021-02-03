@@ -1,3 +1,4 @@
 bool result
-float64 angle
+int32 x
+int32 y
 float64 temperature

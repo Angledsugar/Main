@@ -33,7 +33,6 @@ void Robot::IR_CB(const life_msgs::IR &msg){
 void Robot::Cam_CB(const life_msgs::Cam &msg){
 	//ROS_INFO("CAMERA MESSAGE GET");
 	person.result = msg.result;
-	person.angle = msg.angle * CAM_FOV/2;
 }
 
 

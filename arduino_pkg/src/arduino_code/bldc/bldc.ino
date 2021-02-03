@@ -41,7 +41,7 @@ void setup()
   nh.subscribe(sub);
   left_m.attach(9);
   right_m.attach(11);
-  left_m.writeMicroseconds(left_power);
+  left_m.writeMicroseconds(1000);
   right_m.writeMicroseconds(right_power);
 }
 
