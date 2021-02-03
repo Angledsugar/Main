@@ -19,6 +19,7 @@ add_message_files(
   Imu.msg
   Imu_Accel.msg
   Imu_Pose.msg
+  Imu_Velocity.msg
 )
 
 #add_service_files(

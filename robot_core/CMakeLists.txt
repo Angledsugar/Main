@@ -27,5 +27,5 @@ add_library(mylib include/robot_core.cpp include/core.cpp ${MY_HEADER})
 add_executable(robot_core src/main.cpp ${MY_HEADER})
 add_dependencies(robot_core ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(robot_core
-   ${catkin_LIBRARIES} mylib
+   ${catkin_LIBRARIES} mylib -lwiringPi -lrt -lpthread
 )

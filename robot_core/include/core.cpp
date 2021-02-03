@@ -3,7 +3,14 @@
 using namespace Life;
 
 Core::Core() : Robot(){
-	step_set_(TURN_ON);
+    step_set_(TURN_ON);
+	wiringPiSetupGpio();
+    pinMode(RED, OUTPUT);
+    pinMode(GREEN, OUTPUT);
+    pinMode(BLUE, OUTPUT);
+    digitalWrite(RED,HIGH);
+    digitalWrite(GREEN,LOW);
+    digitalWrite(BLUE,LOW);
 };
 
 
@@ -13,10 +20,21 @@ Core::~Core(){
 
 void Core::prepare(){
 	if(robot_state){
-		if(imu_state == IMU_DROPPED){
-			step_set_(DROPPED);
+		digitalWrite(RED,LOW);
+        digitalWrite(GREEN,LOW);
+        digitalWrite(BLUE,HIGH);
+        if(imu_state == IMU_DROPPED){
+            //step_set_(DROPPED);
+            step_set_(WAIT_FOR_PERSON_GRAPPING);
+            digitalWrite(RED,LOW);
+            digitalWrite(GREEN,HIGH);
+            digitalWrite(BLUE,LOW);
 		}
-		find_person();
+	}
+	else{
+        digitalWrite(RED,HIGH);
+        digitalWrite(GREEN,LOW);
+        digitalWrite(BLUE,LOW);
 	}
 }
 
@@ -41,7 +59,12 @@ void Core::go_to_person(){
 
 void Core::person_grap(){
 	if(imu_state == IMU_GRAPPED){
-		step_set_(WAIT_LIFE_GUARD);
+        //step_set_(WAIT_LIFE_GUARD);
+        step_set_(TURN_ON);
+        digitalWrite(RED,HIGH);
+        digitalWrite(GREEN,HIGH);
+        digitalWrite(BLUE,HIGH);
+        ros::Duration(3).sleep();
 	}
 }
 

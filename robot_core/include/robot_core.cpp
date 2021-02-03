@@ -31,14 +31,14 @@ void Robot::IR_CB(const life_msgs::IR &msg){
 
 
 void Robot::Cam_CB(const life_msgs::Cam &msg){
-	ROS_INFO("CAMERA MESSAGE GET");
+	//ROS_INFO("CAMERA MESSAGE GET");
 	person.result = msg.result;
 	person.angle = msg.angle * CAM_FOV/2;
 }
 
 
 void Robot::Imu_CB(const life_msgs::Imu &msg){
-	ROS_INFO("IMU MESSAGE GET");
+	//ROS_INFO("IMU MESSAGE GET");
 	imu_state = msg.state;
 }
 
