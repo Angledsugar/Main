@@ -4,7 +4,7 @@
 int main(int argc, char** argv){
 	ros::init(argc,argv,"IMU_NODE");
 	ros::NodeHandle nh;
-	ros::Publisher pub = nh.advertise<sensor_msgs::Imu>("/imu/data_raw",1);
+	ros::Publisher pub = nh.advertise<sensor_msgs::Imu>("/life/imu",1);
 	sensor_msgs::Imu imu_msg;
 	IMU my_ahrs("/dev/ttyACM0");
 	ROS_INFO("SETTING IMU...");
@@ -14,10 +14,10 @@ int main(int argc, char** argv){
 	while(ros::ok()){
 		imu_msg.header.stamp = ros::Time::now();
 		
-		imu_msg.orientation.x = my_ahrs.q.x;
-		imu_msg.orientation.y = my_ahrs.q.y;
-		imu_msg.orientation.z = my_ahrs.q.z;
-		imu_msg.orientation.w = my_ahrs.q.w;
+		imu_msg.orientation.x = my_ahrs.e.roll;
+		imu_msg.orientation.y = my_ahrs.e.pitch;
+		imu_msg.orientation.z = my_ahrs.e.yaw;
+		imu_msg.orientation.w = 0;
 		
 		imu_msg.angular_velocity.x = my_ahrs.imu.gx;
 		imu_msg.angular_velocity.y = my_ahrs.imu.gy;

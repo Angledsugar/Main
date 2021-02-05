@@ -69,8 +69,17 @@ int main(int argc,char **argv){
 						#endif
 					}
 				}
-		#elif
-			cout<<"NO MODULE TEST!!"<<enld;
+		#elif LORA
+			if(lora.good){
+				if(lora.swrite("HELLO",6)<0)
+					cout<<"LoRa write Error!!"<<endl;
+				else{
+					cout<<"Write to LoRa"<<endl;
+					sleep(2);
+				}
+			}
+		#else
+			cout<<"NO MODULE TEST!!"<<endl;
 		#endif
 		state_pub.publish(state_msg);
 	}
