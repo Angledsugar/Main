@@ -1,6 +1,7 @@
 #include "imu.h"
 #include "ros/ros.h"
 #include "sensor_msgs/Imu.h"
+#include <cmath>
 int main(int argc, char** argv){
 	ros::init(argc,argv,"IMU_NODE");
 	ros::NodeHandle nh;
@@ -26,7 +27,7 @@ int main(int argc, char** argv){
 		imu_msg.linear_acceleration.x = my_ahrs.imu.ax;
 		imu_msg.linear_acceleration.y = my_ahrs.imu.ay;
 		imu_msg.linear_acceleration.z = my_ahrs.imu.az;
-		
+		ros::Duration(0.01).sleep();
 		pub.publish(imu_msg);
 	}
 	return 0;

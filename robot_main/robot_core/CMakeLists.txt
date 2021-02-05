@@ -11,12 +11,13 @@ find_package(catkin REQUIRED COMPONENTS
   life_msgs
   roscpp
   sensor_msgs
+  geometry_msgs
 )
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES robot_core
-  CATKIN_DEPENDS life_msgs roscpp sensor_msgs
+  CATKIN_DEPENDS life_msgs roscpp sensor_msgs geometry_msgs
   DEPENDS system_lib
 )
 
@@ -30,8 +31,7 @@ file(GLOB LIFE_LIB_SRC
 )
 add_library(life_lib ${LIFE_LIB_SRC})
 target_include_directories(life_lib 
-PRIVATE
-	include
+PRIVATE include
 )
 
 add_executable(robot_core src/main.cpp)
