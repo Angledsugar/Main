@@ -23,7 +23,7 @@ void PID::set_target(float target){
 	_I_gain_max = (_max - _min)*0.1 + target*_Kp;
 }
 
-float PID::init(float max, float min){
+void PID::init(float max, float min){
 	_min = min;
 	_max = max;
 }

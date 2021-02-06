@@ -7,7 +7,7 @@ namespace LIFE{
 			~PID();
 			float calculate(float now);
 			void set_target(float target);
-			float init(float max, float min);
+			void init(float max, float min);
 		private:
 			float _Kp,_Ki,_Kd;
 			float _I_gain;
