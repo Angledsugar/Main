@@ -7,7 +7,7 @@
 #include "sensor_msgs/Imu.h"
 #include <queue>
 #include <algorithm>
-#include "rotation.h"
+#include "rotation.hpp"
 #define CAM_X_RANGE 160
 #define CAM_Y_RANGE 120
 #define CAM_FOV_HORIZON 57

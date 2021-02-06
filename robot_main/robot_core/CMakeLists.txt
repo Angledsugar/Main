@@ -29,7 +29,10 @@ include_directories(
 file(GLOB LIFE_LIB_SRC
      "include/*.cpp"
 )
-add_library(life_lib ${LIFE_LIB_SRC})
+file(GLOB LIFE_LIB_HEADER
+     "include/*.h"
+)
+add_library(life_lib ${LIFE_LIB_SRC} ${LIFE_LIB_HEADER})
 target_include_directories(life_lib 
 PRIVATE include
 )

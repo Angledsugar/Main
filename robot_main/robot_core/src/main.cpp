@@ -1,10 +1,14 @@
 #include "life_ros.h"
 #include "filter.h"
+#include "life_pid.h"
 int main(int argc,char** argv){
 	ros::init(argc,argv,"ROBOT_CORE");
 	ros::NodeHandle nh;
 	LIFE::Life life(nh);
 	LIFE::Filter filter(0.7);
+	LIFE::PID angle_pid(5,0,0) , linear_pid(5,0,0);
+	angle_pid.init(1.57,0);
+	linear_pid.init(3,0);
 	enum State{TURN_ON , DROPPED , CLOSE , GRAPPED};
 	State state = TURN_ON;
 	while(ros::ok()){
@@ -22,7 +26,7 @@ int main(int argc,char** argv){
 		}
 		else if(state == DROPPED){
 				LIFE::L_VECTOR person = life.get_person_posinton();
-				ROS_INFO("PERSON : %f , %f , %f",person.x,person.y,person.z);
+				
 		};
 		ros::spinOnce();
 		ros::Duration(0.01).sleep();
