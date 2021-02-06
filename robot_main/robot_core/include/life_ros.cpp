@@ -13,17 +13,36 @@ Life::Life(ros::NodeHandle& nh) : _nh(nh){
 
 Life::~Life(){};
 
-float Life::get_force(){
-	float force = (_roted_lin_acc.x + _roted_lin_acc.y + _roted_lin_acc.z)*6.5;
+float Life::get_force(int mode){
+	float force;
+	if(mode == FULL_FORCE){
+		force = (_roted_lin_acc.x + _roted_lin_acc.y + _roted_lin_acc.z)*6.5;	
+	}
+	else if(mode == X_FORCE){
+		_roted_lin_acc.x*6.5;
+	}
+	else if(mode == Y_FORCE){
+		_roted_lin_acc.y*6.5;
+	}
+	else if(mode == Z_FORCE){
+		_roted_lin_acc.z*6.5;
+	}
 	return force;
 };
 float Life::get_cross(){
 	_rb_vetor = transform(_rot,_std_vector);
 	return _rb_vetor.z*_std_vector.z;
 }
+L_VECTOR Life::get_angle_vel(){
+	return _roted_ag_vel;
+}
 
 L_VECTOR Life::get_person_posinton(){
 	return _roted_person;
+}
+
+bool Life::is_find_person(){
+	return _is_person;
 }
 
 void Life::Imu_CB(const sensor_msgs::Imu &msg){
@@ -46,4 +65,5 @@ void Life::Cam_CB(const life_msgs::Cam &msg){
 		_roted_person = inv_transform(_rot,person);
 		_roted_person.y = 20;
 	}
+	_is_person = msg.result;
 }
