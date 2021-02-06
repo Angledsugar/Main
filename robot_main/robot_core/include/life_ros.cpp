@@ -40,9 +40,10 @@ void Life::Imu_CB(const sensor_msgs::Imu &msg){
 void Life::Cam_CB(const life_msgs::Cam &msg){
 	if(msg.result){
 		L_VECTOR person;
-		person.x = msg.x/CAM_X_RANGE*CAM_FOV_HORIZON;
-		person.y = 20;
-		person.z = msg.y/CAM_Y_RANGE*CAM_FOV_VERTICAL;
+		person.x = msg.x*CAM_FOV_HORIZON/CAM_X_RANGE;
+		person.y = 0;
+		person.z = msg.y*CAM_FOV_VERTICAL/CAM_Y_RANGE;
 		_roted_person = inv_transform(_rot,person);
+		_roted_person.y = 20;
 	}
 }
