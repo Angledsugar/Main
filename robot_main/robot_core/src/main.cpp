@@ -1,16 +1,21 @@
 #include "life_ros.h"
 #include "filter.h"
 #include "life_pid.h"
+#include "life_msgs/Motor_set.h"
+#define MOTOR_FRONT_DIR true
+#define MOTOR_BACK_DIR false
 int main(int argc,char** argv){
 	ros::init(argc,argv,"ROBOT_CORE");
 	ros::NodeHandle nh;
+	ros::Publisher motor = nh.advertise<life_msgs::Motor_set>("/life/motor",1);
+	life_msgs::Motor_set motor_msg;
 	LIFE::Life life(nh);
 	LIFE::Filter filter(0.7);
-	LIFE::PID angle_pid(5,0,0),linear_pid(5,0,0);
-	angle_pid.init(1.57,0);
+	LIFE::PID angle_pid(0.4,0.01,0),linear_pid(5,0,0);
+	angle_pid.init(90,0);
 	linear_pid.init(3,0);
 	enum State{TURN_ON , DROPPED ,GO,CLOSE , GRAPPED};
-	State state = TURN_ON;
+	State state = DROPPED;
 	while(ros::ok()){
 		if(state ==  TURN_ON){
 			float now_force = life.get_force(LIFE::Life::FULL_FORCE);
@@ -24,24 +29,38 @@ int main(int argc,char** argv){
 				state = DROPPED;
 				filter.reset();
 				filter.set_cutting_frequency(0.9);
-				angle_pid.set_target(1.5);
+				angle_pid.set_target(180);
 			}
 		}
 		else if(state == DROPPED){
+				angle_pid.set_target(90);
 				if(!life.is_find_person()){
 					LIFE::L_VECTOR angle_spd = life.get_angle_vel();
-					float pid_gain = angle_pid.calculate(angle_spd.z);
-					
+					float angle_gain = angle_pid.calculate(angle_spd.z);
+					if(angle_gain > 0){
+						motor_msg.left.dir = MOTOR_FRONT_DIR;
+						motor_msg.left.speed = angle_gain;
+						motor_msg.right.dir = MOTOR_BACK_DIR;
+						motor_msg.right.speed = angle_gain;
+					}
+					else{
+						motor_msg.left.dir = MOTOR_BACK_DIR;
+						motor_msg.left.speed = -angle_gain;
+						motor_msg.right.dir = MOTOR_FRONT_DIR;
+						motor_msg.right.speed = -angle_gain;
+					}
+					motor.publish(motor_msg);
+					ROS_INFO("angle_gain : %f",angle_gain);
 				}
 				else{
-					LIFE::L_VECTOR person = get_person_posinton();
+					LIFE::L_VECTOR person = life.get_person_position();
 					state = GO;
 				}
-				
 		}
 		else if(state == GO){
 			float now_force = life.get_force(LIFE::Life::X_FORCE);
 			float filter_force = filter.low_pass(now_force);
+			
 		}
 		ros::spinOnce();
 		ros::Duration(0.01).sleep();

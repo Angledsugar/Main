@@ -14,18 +14,19 @@
 #define CAM_FOV_VERTICAL 49.6492314863
 namespace LIFE{
 	class Life{
-		const int FULL_FORCE = 0;
-		const int X_FORCE = 1;
-		const int Y_FORCE = 2;
-		const int Z_FORCE = 3;
+		
 		typedef geometry_msgs::Vector3 L_VECTOR;
 		public:
+			const static int FULL_FORCE = 0;
+			const static int X_FORCE = 1;
+			const static int Y_FORCE = 2;
+			const static int Z_FORCE = 3;
 			Life(ros::NodeHandle& nh);
 			~Life();
 			float get_force(int mode = 0);
 			float get_cross();
 			L_VECTOR get_angle_vel();
-			L_VECTOR get_person_posinton();
+			L_VECTOR get_person_position();
 			bool is_find_person();
 		private:
 			L_VECTOR _std_vector;

@@ -37,7 +37,7 @@ L_VECTOR Life::get_angle_vel(){
 	return _roted_ag_vel;
 }
 
-L_VECTOR Life::get_person_posinton(){
+L_VECTOR Life::get_person_position(){
 	return _roted_person;
 }
 
