@@ -3,6 +3,7 @@ using namespace LIFE;
 Life::Life(ros::NodeHandle& nh) : _nh(nh){
 	_imu = _nh.subscribe("/life/imu", 1,&Life::Imu_CB,this);
 	_cam = _nh.subscribe("/life/Cam", 1,&Life::Cam_CB,this);
+	_ir = _nh.subscribe("/life/IR", 1,&Life::IR_CB,this);
 	_std_vector.x = 0;
 	_std_vector.y = 0;
 	_std_vector.z = 1;
@@ -45,6 +46,9 @@ bool Life::is_find_person(){
 	return _is_person;
 }
 
+bool Life::is_close_person(){
+	return _is_close;
+}
 void Life::Imu_CB(const sensor_msgs::Imu &msg){
 	_rot = msg.orientation;
 	_rot.z = 0;
@@ -66,4 +70,12 @@ void Life::Cam_CB(const life_msgs::Cam &msg){
 		_roted_person.y = 20;
 	}
 	_is_person = msg.result;
+}
+
+void Life::IR_CB(const life_msgs::IR &msg){
+	_is_close = false;
+	for(int i=0;i<IR_NUM;i++){
+		if(msg.ir[i] < 500)
+			_is_close = true;
+	}
 }

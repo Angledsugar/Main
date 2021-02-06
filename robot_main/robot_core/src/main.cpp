@@ -58,9 +58,10 @@ int main(int argc,char** argv){
 				}
 		}
 		else if(state == GO){
-			float now_force = life.get_force(LIFE::Life::X_FORCE);
-			float filter_force = filter.low_pass(now_force);
-			
+			if(!life.is_close_person()){
+				float now_force = life.get_force(LIFE::Life::X_FORCE);
+				float filter_force = filter.low_pass(now_force);
+			}
 		}
 		ros::spinOnce();
 		ros::Duration(0.01).sleep();

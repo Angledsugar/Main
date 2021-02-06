@@ -12,6 +12,7 @@
 #define CAM_Y_RANGE 120
 #define CAM_FOV_HORIZON 57
 #define CAM_FOV_VERTICAL 49.6492314863
+#define IR_NUM 5
 namespace LIFE{
 	class Life{
 		
@@ -28,6 +29,7 @@ namespace LIFE{
 			L_VECTOR get_angle_vel();
 			L_VECTOR get_person_position();
 			bool is_find_person();
+			bool is_close_person();
 		private:
 			L_VECTOR _std_vector;
 			geometry_msgs::Quaternion _rot;
@@ -36,11 +38,12 @@ namespace LIFE{
 			L_VECTOR _rb_vetor;
 			L_VECTOR _roted_lin_acc,_roted_ag_vel;
 			L_VECTOR _roted_person;
-			bool _is_person;
+			bool _is_person,_is_close;
 			ros::NodeHandle _nh;
-			ros::Subscriber _imu,_cam;
+			ros::Subscriber _imu,_cam,_ir;
 			void Imu_CB(const sensor_msgs::Imu &msg);
 			void Cam_CB(const life_msgs::Cam &msg);
+			void IR_CB(const life_msgs::IR &msg);
 	};
 };
 #endif
