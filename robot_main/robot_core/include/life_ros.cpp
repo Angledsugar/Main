@@ -1,25 +1,31 @@
 #include "life_ros.h"
+using namespace LIFE;
 Life::Life(ros::NodeHandle& nh) : _nh(nh){
 	_imu = _nh.subscribe("/life/imu", 1,&Life::Imu_CB,this);
+	_cam = _nh.subscribe("/life/Cam", 1,&Life::Cam_CB,this);
 	_std_vector.x = 0;
 	_std_vector.y = 0;
 	_std_vector.z = 1;
+	_roted_person.x = 0;
+	_roted_person.y = 0;
+	_roted_person.z = 0;
 }
 
 Life::~Life(){};
 
-bool Life::is_drop(){
-	_rb_vetor = transform(_rot,_std_vector);
-	float cross = _rb_vetor.z*_std_vector.z;
+float Life::get_force(){
 	float force = (_roted_lin_acc.x + _roted_lin_acc.y + _roted_lin_acc.z)*6.5;
-
-	ROS_INFO("force : %f",force);
-	if(force > 124){
-		ROS_INFO("DROPPED");
-		return true;
-	}
-	return false;
+	return force;
 };
+float Life::get_cross(){
+	_rb_vetor = transform(_rot,_std_vector);
+	return _rb_vetor.z*_std_vector.z;
+}
+
+L_VECTOR Life::get_person_posinton(){
+	return _roted_person;
+}
+
 void Life::Imu_CB(const sensor_msgs::Imu &msg){
 	_rot = msg.orientation;
 	_rot.z = 0;
@@ -31,3 +37,12 @@ void Life::Imu_CB(const sensor_msgs::Imu &msg){
 	
 };
 
+void Life::Cam_CB(const life_msgs::Cam &msg){
+	if(msg.result){
+		L_VECTOR person;
+		person.x = msg.x/CAM_X_RANGE*CAM_FOV_HORIZON;
+		person.y = 20;
+		person.z = msg.y/CAM_Y_RANGE*CAM_FOV_VERTICAL;
+		_roted_person = inv_transform(_rot,person);
+	}
+}

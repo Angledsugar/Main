@@ -12,7 +12,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from threading import Thread
 global status
 status = Status()
-pub_status = rospy.Publisher('/Status/Cam', Status, queue_size=2)
+pub_status = rospy.Publisher('/life/Status/Cam', Status, queue_size=2)
 
 class ThermalImageProcessor(object):
 
