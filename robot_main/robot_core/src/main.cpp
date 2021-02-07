@@ -11,17 +11,21 @@ int main(int argc,char** argv){
 	LIFE::Motor motor(nh);
 	angle_pid.init(90,0);
 	linear_pid.init(30,0);
-	enum State{TURN_ON , DROPPED ,GO , CLOSE , GRAPPED};
-	State state = GO;
+	enum State{READY ,TURN_ON, DROPPED ,GO , CLOSE , GRAPPED};
+	State state = READY;
 	while(ros::ok()){
-		if(state ==  TURN_ON){
+		if(state == READY){
+			if(life.is_sensor_good(LIFE::Life::ALL_SENSOR))
+				state == TURN_ON;
+		}
+		else if(state ==  TURN_ON){
 			float now_force = life.get_force(LIFE::Life::FULL_FORCE);
 			float filter_force = filter.high_pass(now_force);
 			float now_cross = life.get_cross();				
 			float filter_cross = filter.low_pass(now_cross);
 			float valid_force =  abs(filter_force);
 			ROS_INFO("FORCE : %f , CROSS : %f",valid_force,filter_cross);
-			if(filter_force>100 && filter_cross > 0.6){
+			if(filter_force>70 && filter_cross > 0.6){
 				ROS_INFO("DROPPED!!");
 				state = DROPPED;
 				filter.reset();
