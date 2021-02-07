@@ -1,12 +1,15 @@
 #include <Servo.h>
 #include <ros.h>
 #include <life_msgs/Motor.h>
-
+#include <life_msgs/Status.h>
 int left_power = 1500;
 int right_power = 1500;
 Servo left_m,right_m;
 
 ros::NodeHandle  nh;
+life_msgs::Status state;
+ros::Publisher state_pub("/life/Status/Motor", &state);
+
 void messageCb( const life_msgs::Motor& msg){
     float angle = msg.angle;
     float linear = msg.linear;
@@ -27,11 +30,13 @@ void setup()
   delay(2000);
   nh.initNode();
   nh.subscribe(sub);
-    
+  nh.advertise(state_pub);
+  state.good = true;
 }
 
 void loop()
 {  
+  state_pub.publish(&state);
   nh.spinOnce();
   delay(1);
 }

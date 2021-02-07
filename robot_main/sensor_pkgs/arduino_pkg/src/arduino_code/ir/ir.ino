@@ -104,18 +104,7 @@ void timer_hander(){
 }
 
 void low_pass_filter(){
- /*
-    IR_msg.ir1 = (IR[0][0]);
-    IR_msg.ir2 = (IR[0][1]);  
-    IR_msg.ir3 = (IR[0][2]);
-    IR_msg.ir4 = (IR[0][3]);
-    IR_msg.ir5 = (IR[0][4]);
-   */
-  
-  IR_msg.ir1 = (IR_data[0][0]);
-  IR_msg.ir2 = (IR_data[0][1]);
-  IR_msg.ir3 = (IR_data[0][2]);
-  IR_msg.ir4 = (IR_data[0][3]);
-  IR_msg.ir5 = (IR_data[0][4]);
+  for(int i = 0 ; i< IR_NUM;i++)  
+    IR_msg.ir[i] = (IR_data[0][i]);
   
 }
