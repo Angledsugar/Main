@@ -24,9 +24,10 @@ void setup()
   right_m.attach(11);
   left_m.writeMicroseconds(left_power);
   right_m.writeMicroseconds(right_power);
+  delay(2000);
   nh.initNode();
   nh.subscribe(sub);
-  
+    
 }
 
 void loop()
