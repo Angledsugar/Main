@@ -20,13 +20,13 @@ float Life::get_force(int mode){
 		force = (_roted_lin_acc.x + _roted_lin_acc.y + _roted_lin_acc.z)*6.5;	
 	}
 	else if(mode == X_FORCE){
-		_roted_lin_acc.x*6.5;
+		force = _roted_lin_acc.x*6.5;
 	}
 	else if(mode == Y_FORCE){
-		_roted_lin_acc.y*6.5;
+		force = _roted_lin_acc.y*6.5;
 	}
 	else if(mode == Z_FORCE){
-		_roted_lin_acc.z*6.5;
+		force = _roted_lin_acc.z*6.5;
 	}
 	return force;
 };

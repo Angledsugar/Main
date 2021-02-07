@@ -14,8 +14,21 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
 )
 
+file(GLOB LIFE_DIRECTORY_LISTS include/*)
+set(LIFE_INCLUDE_DIR "")
+set(LIFE_SRCS "")
+set(LIFE_HEADERS "")
+foreach(LIFE_DIRECTORY_LIST ${LIFE_DIRECTORY_LISTS})
+  list(APPEND LIFE_INCLUDE_DIR ${LIFE_DIRECTORY_LIST})
+  message("ADD INCLUDE DIRECTORY : ${LIFE_DIRECTORY_LIST}")
+  file(GLOB LIFE_LIB_SRC ${LIFE_DIRECTORY_LIST}/*.cpp )
+  list(APPEND LIFE_SRCS ${LIFE_LIB_SRC})
+  file(GLOB LIFE_LIB_HEADER ${LIFE_DIRECTORY_LIST}/*.h )
+  list(APPEND LIFE_HEADERS ${LIFE_LIB_HEADER})
+endforeach()
+
 catkin_package(
-  INCLUDE_DIRS include
+  INCLUDE_DIRS include ${LIFE_INCLUDE_DIR}
   LIBRARIES robot_core
   CATKIN_DEPENDS life_msgs roscpp sensor_msgs geometry_msgs
   DEPENDS system_lib
@@ -23,18 +36,15 @@ catkin_package(
 
 include_directories(
   include
+  ${LIFE_INCLUDE_DIR}
   ${catkin_INCLUDE_DIRS}
 )
 
-file(GLOB LIFE_LIB_SRC
-     "include/*.cpp"
-)
-file(GLOB LIFE_LIB_HEADER
-     "include/*.h"
-)
-add_library(life_lib ${LIFE_LIB_SRC} ${LIFE_LIB_HEADER})
+message("LIFE_LIB_SRC : ${LIFE_SRCS}")
+message("LIFE_LIB_HEADER : ${LIFE_HEADERS}")
+add_library(life_lib ${LIFE_SRCS} ${LIFE_HEADERS})
 target_include_directories(life_lib 
-PRIVATE include
+PRIVATE include ${LIFE_INCLUDE_DIR}
 )
 
 add_executable(robot_core src/main.cpp)
