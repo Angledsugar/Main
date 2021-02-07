@@ -13,13 +13,8 @@ add_message_files(
   FILES
   IR.msg
   Motor.msg
-  Motor_set.msg
   Cam.msg
   Status.msg
-  Imu.msg
-  Imu_Accel.msg
-  Imu_Pose.msg
-  Imu_Velocity.msg
 )
 
 #add_service_files(

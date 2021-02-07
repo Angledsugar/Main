@@ -5,7 +5,6 @@
 int main(int argc,char** argv){
 	ros::init(argc,argv,"ROBOT_CORE");
 	ros::NodeHandle nh;
-	life_msgs::Motor_set motor_msg;
 	LIFE::Life life(nh);
 	LIFE::Filter filter(0.7);
 	LIFE::PID angle_pid(0.4,0.01,0),linear_pid(1,0.1,0);
