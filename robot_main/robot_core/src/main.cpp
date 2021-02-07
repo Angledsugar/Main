@@ -32,39 +32,47 @@ int main(int argc,char** argv){
 			}
 		}
 		else if(state == DROPPED){
-				angle_pid.set_target(90);
-				if(!life.is_find_person()){
-					LIFE::L_VECTOR angle_spd = life.get_angle_vel();
-					float angle_gain = angle_pid.calculate(angle_spd.z);
-					float now_force = life.get_force(LIFE::Life::X_FORCE);
-					float filter_force = filter.low_pass(now_force);
-					static float force_sum = 0;
-					force_sum += filter_force;
-					float linear_gain = linear_pid.calculate(now_force);
-					motor.move(angle_gain,linear_gain);
-					ROS_INFO("angle_gain : %f , linear_gain : %f , FORCE : %f",angle_gain,linear_gain,now_force);
+				if(life.is_sensor_good(LIFE::Life::ALL_SENSOR)){
+					angle_pid.set_target(90);
+					if(!life.is_find_person()){
+						LIFE::L_VECTOR angle_spd = life.get_angle_vel();
+						float angle_gain = angle_pid.calculate(angle_spd.z);
+						float now_force = life.get_force(LIFE::Life::X_FORCE);
+						float filter_force = filter.low_pass(now_force);
+						static float force_sum = 0;
+						force_sum += filter_force;
+						float linear_gain = linear_pid.calculate(now_force);
+						motor.move(angle_gain,linear_gain);
+						ROS_INFO("angle_gain : %f , linear_gain : %f , FORCE : %f",angle_gain,linear_gain,now_force);
+					}
+					else{
+						LIFE::L_VECTOR person = life.get_person_position();
+						angle_pid.set_target(person.x);
+						linear_pid.set_target(5);
+						state = GO;
+					}
 				}
 				else{
-					LIFE::L_VECTOR person = life.get_person_position();
-					angle_pid.set_target(person.x);
-					linear_pid.set_target(5);
-					state = GO;
+					angle_pid.set_target(0);
 				}
 		}
 		else if(state == GO){
 			if(!life.is_close_person()){
-				linear_pid.set_target(5);
-				LIFE::L_VECTOR angle_spd = life.get_angle_vel();
-				LIFE::L_VECTOR person = life.get_person_position();
-				angle_pid.set_target(person.x);
-				float angle_gain = angle_pid.calculate(angle_spd.z);
 				float now_force = life.get_force(LIFE::Life::X_FORCE);
 				float filter_force = filter.low_pass(now_force);
 				static float force_sum = 0;
 				force_sum += filter_force;
 				float linear_gain = linear_pid.calculate(now_force);
-				motor.move(angle_gain,linear_gain);
-				ROS_INFO("angle_gain : %f , linear_gain : %f , FORCE : %f",angle_gain,linear_gain,now_force);
+				if(life.is_sensor_good(LIFE::Life::CAM)){
+					LIFE::L_VECTOR angle_spd = life.get_angle_vel();
+					LIFE::L_VECTOR person = life.get_person_position();
+					angle_pid.set_target(person.x);
+					float angle_gain = angle_pid.calculate(angle_spd.z);
+					motor.move(angle_gain,linear_gain);
+				}
+				else{
+					motor.move(0,linear_gain);
+				}
 			}
 			else{
 				motor.move(0,0);

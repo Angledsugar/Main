@@ -5,8 +5,7 @@
 #include "life_msgs/Imu.h"
 #include "life_msgs/Cam.h"
 #include "sensor_msgs/Imu.h"
-#include <queue>
-#include <algorithm>
+#include "life_msgs/Status.h"
 #include "rotation.hpp"
 #define CAM_X_RANGE 160
 #define CAM_Y_RANGE 120
@@ -22,14 +21,19 @@ namespace LIFE{
 			const static int X_FORCE = 1;
 			const static int Y_FORCE = 2;
 			const static int Z_FORCE = 3;
+			const static int ALL_SENSOR = 0;
+			const static int CAM = 1;
+			const static int IR = 2;
+			const static int MOTOR = 3;
 			Life(ros::NodeHandle& nh);
 			~Life();
-			float get_force(int mode = 0);
+			float get_force(int mode = FULL_FORCE);
 			float get_cross();
 			L_VECTOR get_angle_vel();
 			L_VECTOR get_person_position();
 			bool is_find_person();
 			bool is_close_person();
+			bool is_sensor_good(int mode = ALL_SENSOR);
 		private:
 			L_VECTOR _std_vector;
 			geometry_msgs::Quaternion _rot;
@@ -39,11 +43,16 @@ namespace LIFE{
 			L_VECTOR _roted_lin_acc,_roted_ag_vel;
 			L_VECTOR _roted_person;
 			bool _is_person,_is_close;
+			bool _is_good_ir,_is_good_cam,_is_good_motor;
 			ros::NodeHandle _nh;
 			ros::Subscriber _imu,_cam,_ir;
+			ros::Subscriber _st_cam,_st_ir,_st_motor;
 			void Imu_CB(const sensor_msgs::Imu &msg);
 			void Cam_CB(const life_msgs::Cam &msg);
 			void IR_CB(const life_msgs::IR &msg);
+			void ST_IR_CB(const life_msgs::Status &msg);
+			void ST_Cam_CB(const life_msgs::Status &msg);
+			void ST_Motor_CB(const life_msgs::Status &msg);
 	};
 };
 #endif

@@ -4,6 +4,9 @@ Life::Life(ros::NodeHandle& nh) : _nh(nh){
 	_imu = _nh.subscribe("/life/imu", 1,&Life::Imu_CB,this);
 	_cam = _nh.subscribe("/life/Cam", 1,&Life::Cam_CB,this);
 	_ir = _nh.subscribe("/life/IR", 1,&Life::IR_CB,this);
+	_st_cam = _nh.subscribe("/life/Status/Cam", 1,&Life::ST_IR_CB,this);
+	_st_ir = _nh.subscribe("/life/Status/IR", 1,&Life::ST_IR_CB,this);
+	_st_motor = _nh.subscribe("/life/Status/Motor", 1,&Life::ST_IR_CB,this);
 	_std_vector.x = 0;
 	_std_vector.y = 0;
 	_std_vector.z = 1;
@@ -49,6 +52,21 @@ bool Life::is_find_person(){
 bool Life::is_close_person(){
 	return _is_close;
 }
+
+bool Life::is_sensor_good(int mode){
+	if(mode == ALL_SENSOR)
+		return _is_good_ir & _is_good_cam & _is_good_motor;
+	else if(mode == CAM)
+		return _is_good_cam;
+	else if(mode == IR)
+		return _is_good_ir;
+	else if(mode == MOTOR)
+		return _is_good_motor;
+	else
+		return false;
+}
+
+
 void Life::Imu_CB(const sensor_msgs::Imu &msg){
 	_rot = msg.orientation;
 	_rot.z = 0;
@@ -79,3 +97,29 @@ void Life::IR_CB(const life_msgs::IR &msg){
 			_is_close = true;
 	}
 }
+
+void Life::ST_IR_CB(const life_msgs::Status &msg){
+	_is_good_ir = msg.good;
+}
+void Life::ST_Cam_CB(const life_msgs::Status &msg){
+	_is_good_cam = msg.good;
+}
+void Life::ST_Motor_CB(const life_msgs::Status &msg){
+	_is_good_motor = msg.good;
+}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
