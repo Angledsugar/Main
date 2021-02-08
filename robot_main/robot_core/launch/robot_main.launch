@@ -1,0 +1,10 @@
+<launch>
+  <node name="CORE" pkg="robot_core" type="robot_core" output="screen" respawn="true">
+  </node>
+  <include file="$(find flir_lepton_image_processing)/launch/thermal_image_processor.launch">
+  </include>
+  <include file="$(find arduino_pkg)/launch/ir_bldc.launch">
+  </include>
+  <node name="IMU" pkg="imu_pkg" type="imu_node" output="screen" respawn="true">
+  </node>
+</launch>

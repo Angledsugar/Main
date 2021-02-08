@@ -2,21 +2,30 @@
 #include "filter.h"
 #include "life_pid.h"
 #include "motor.h"
+#include "state_led.h"
 int main(int argc,char** argv){
 	ros::init(argc,argv,"ROBOT_CORE");
 	ros::NodeHandle nh;
 	LIFE::Life life(nh);
 	LIFE::Filter filter(0.7);
-	LIFE::PID angle_pid(0.4,0.01,0),linear_pid(1,0.1,0);
+	LIFE::PID angle_pid(0.4,0,0),linear_pid(1.2,0,0);
 	LIFE::Motor motor(nh);
+	LIFE::StateLed led(nh);
 	angle_pid.init(90,0);
 	linear_pid.init(30,0);
 	enum State{READY ,TURN_ON, DROPPED ,GO , CLOSE , GRAPPED};
 	State state = READY;
+	ROS_INFO("ROBOT STATE : READY");
 	while(ros::ok()){
 		if(state == READY){
-			if(life.is_sensor_good(LIFE::Life::ALL_SENSOR))
-				state == TURN_ON;
+			if(life.is_sensor_good(LIFE::Life::ALL_SENSOR)){
+				led.led_set(LIFE::StateLed::BLUE,LIFE::StateLed::RED);
+				state = TURN_ON;
+				ROS_INFO("ROBOT STATE : TURN_ON");
+			}
+			else{
+				led.led_set(LIFE::StateLed::RED,LIFE::StateLed::RED);
+			}
 		}
 		else if(state ==  TURN_ON){
 			float now_force = life.get_force(LIFE::Life::FULL_FORCE);
@@ -25,9 +34,10 @@ int main(int argc,char** argv){
 			float filter_cross = filter.low_pass(now_cross);
 			float valid_force =  abs(filter_force);
 			ROS_INFO("FORCE : %f , CROSS : %f",valid_force,filter_cross);
-			if(filter_force>70 && filter_cross > 0.6){
+			if(filter_force>20 && filter_cross > 0.6){
 				ROS_INFO("DROPPED!!");
 				state = DROPPED;
+				led.led_set(LIFE::StateLed::BLUE,LIFE::StateLed::BLUE);
 				filter.reset();
 				filter.set_cutting_frequency(0.9);
 				angle_pid.set_target(90);
@@ -52,8 +62,10 @@ int main(int argc,char** argv){
 					else{
 						LIFE::L_VECTOR person = life.get_person_position();
 						angle_pid.set_target(person.x);
-						linear_pid.set_target(5);
+						linear_pid.set_target(16);
+						led.led_set(LIFE::StateLed::GREEN,LIFE::StateLed::BLUE);
 						state = GO;
+						ROS_INFO("ROBOT STATE : GO");
 					}
 				}
 				else{
@@ -75,12 +87,19 @@ int main(int argc,char** argv){
 					motor.move(angle_gain,linear_gain);
 				}
 				else{
-					motor.move(0,linear_gain);
+					LIFE::L_VECTOR angle_spd = life.get_angle_vel();
+					angle_pid.set_target(0);
+					float angle_gain = angle_pid.calculate(angle_spd.z);
+					motor.move(angle_gain,linear_gain);
 				}
 			}
 			else{
+				angle_pid.set_target(0);
+				linear_pid.set_target(0);
 				motor.move(0,0);
 				state = CLOSE;
+				ROS_INFO("ROBOT STATE : CLOSE");
+				led.led_set(LIFE::StateLed::GREEN,LIFE::StateLed::GREEN);
 			}
 		}
 		else if(state == CLOSE){
@@ -88,9 +107,11 @@ int main(int argc,char** argv){
 			float filter_low_pass = filter.low_pass(now_force);
 			now_force -= filter_low_pass;
 			float filter_high_force = filter.high_pass(now_force);
-			if(abs(filter_high_force) > 30){
+			motor.move(0,0);
+			if(abs(filter_high_force) > 20){
 				ROS_INFO("GRAPPED!!");
-				state = GRAPPED;
+				state = GRAPPED;	
+				led.led_set(LIFE::StateLed::GREEN,LIFE::StateLed::BLUE);
 			}
 			
 		}

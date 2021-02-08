@@ -7,7 +7,7 @@ int main(int argc, char** argv){
 	ros::NodeHandle nh;
 	ros::Publisher pub = nh.advertise<sensor_msgs::Imu>("/life/imu",1);
 	sensor_msgs::Imu imu_msg;
-	IMU my_ahrs("/dev/ttyACM0");
+	IMU my_ahrs("/dev/IMU");
 	ROS_INFO("SETTING IMU...");
 	if(!my_ahrs.initialize())
 		handle_error("Can't initialize imu");

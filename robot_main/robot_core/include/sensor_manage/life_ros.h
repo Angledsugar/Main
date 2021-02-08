@@ -2,7 +2,6 @@
 #define _LIFE_ROS
 #include "ros/ros.h"
 #include "life_msgs/IR.h"
-#include "life_msgs/Imu.h"
 #include "life_msgs/Cam.h"
 #include "sensor_msgs/Imu.h"
 #include "life_msgs/Status.h"
@@ -11,6 +10,7 @@
 #define CAM_Y_RANGE 120
 #define CAM_FOV_HORIZON 57
 #define CAM_FOV_VERTICAL 49.6492314863
+#define ROBOT_MASS 8.5
 #define IR_NUM 5
 namespace LIFE{
 	class Life{
@@ -23,8 +23,7 @@ namespace LIFE{
 			const static int Z_FORCE = 3;
 			const static int ALL_SENSOR = 0;
 			const static int CAM = 1;
-			const static int IR = 2;
-			const static int MOTOR = 3;
+			const static int MOTOR = 2;
 			Life(ros::NodeHandle& nh);
 			~Life();
 			float get_force(int mode = FULL_FORCE);
@@ -43,14 +42,13 @@ namespace LIFE{
 			L_VECTOR _roted_lin_acc,_roted_ag_vel;
 			L_VECTOR _roted_person;
 			bool _is_person,_is_close;
-			bool _is_good_ir,_is_good_cam,_is_good_motor;
+			bool _is_good_cam,_is_good_motor;
 			ros::NodeHandle _nh;
 			ros::Subscriber _imu,_cam,_ir;
-			ros::Subscriber _st_cam,_st_ir,_st_motor;
+			ros::Subscriber _st_cam,_st_motor;
 			void Imu_CB(const sensor_msgs::Imu &msg);
 			void Cam_CB(const life_msgs::Cam &msg);
 			void IR_CB(const life_msgs::IR &msg);
-			void ST_IR_CB(const life_msgs::Status &msg);
 			void ST_Cam_CB(const life_msgs::Status &msg);
 			void ST_Motor_CB(const life_msgs::Status &msg);
 	};

@@ -14,7 +14,7 @@ void messageCb( const life_msgs::Motor& msg){
     float angle = msg.angle;
     float linear = msg.linear;
     left_power = 1500 - angle/2*459 + linear/2;
-    right_power = 1500 - angle/2*459 + linear/2;
+    right_power = 1500 + angle/2*459 + linear/2;
     left_m.writeMicroseconds(left_power);
     right_m.writeMicroseconds(right_power);
 }
@@ -27,7 +27,6 @@ void setup()
   right_m.attach(11);
   left_m.writeMicroseconds(left_power);
   right_m.writeMicroseconds(right_power);
-  delay(2000);
   nh.initNode();
   nh.subscribe(sub);
   nh.advertise(state_pub);
@@ -38,5 +37,5 @@ void loop()
 {  
   state_pub.publish(&state);
   nh.spinOnce();
-  delay(1);
+  delay(100);
 }

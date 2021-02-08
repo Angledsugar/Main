@@ -1,9 +1,8 @@
 [Unit]
-Description=RoBot Run
-After=robot_state.service 
-
+Description=Run ROBOT
+Before=robot_record.service 
 [Service]
-ExecStart=/home/ubuntu/life_ws/src/booting/robot_run.sh
+ExecStart=/home/ubuntu/life_ws/src/robot_main/booting/robot_run.sh
 Restart=on-abort
 
 [Install]

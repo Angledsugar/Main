@@ -68,15 +68,15 @@ class ThermalImageProcessor(object):
                 cam.x = np.int32(x_band)
                 cam.y = np.int32(y_band)
                 cam.temperature = np.float64(c_mean)
-                self.pub_cam.publish(cam)	    
-            try: 
-                img_msg = self.bridge.cv2_to_imgmsg(img, 'bgr8')
-                img_msg.header = header
-                self.pub_image.publish(img_msg)
-            except CvBridgeError() as e:
-                rospy.logerr(e)
+                self.pub_cam.publish(cam)
         else:
-            self.pub_cam.publish(cam)
+            self.pub_cam.publish(cam)	    
+        try: 
+            img_msg = self.bridge.cv2_to_imgmsg(img, 'bgr8')
+            img_msg.header = header
+            self.pub_image.publish(img_msg)
+        except CvBridgeError() as e:
+            rospy.logerr(e)
 
     @staticmethod
     def raw_to_c(val):
@@ -92,11 +92,11 @@ class ThermalImageProcessor(object):
         c_val = self.raw_to_c(np.array(data.data, dtype=np.uint16))
         c_val = c_val.reshape(data.height, data.width)
         c_val = c_val.astype(np.float32)
-        c_val = c_val * 100 + 27315
+        c_val = c_val * 80 + 27315
         c_minVal, c_maxVal, c_minLoc, c_maxLoc = cv2.minMaxLoc(c_val)
         hist = cv2.calcHist([c_val], [0], None, [65536], [0, 65535])
         people = []
-        for i in range(31315, 25315, -1):  #40C to -20C
+        for i in range(31315, 25315, -1):  #This part*** 40C to -20C 
             if hist[i][0] != 0:
                 people.append(i)
         i_pre = people[0]
@@ -105,7 +105,7 @@ class ThermalImageProcessor(object):
         j = 0
         for i in range(1, len(people)):
             c_data = people[i]
-            if i_pre - c_data < 300:     #segmentation theshold
+            if i_pre - c_data < 300:     #This part*** 300(3C) is segmentation theshold
                 people_segmentation[j].append(c_data)
             else:
                 j += 1
@@ -116,7 +116,7 @@ class ThermalImageProcessor(object):
         c_val = (c_val - 27315) / 100
         mask = cv2.inRange(c_val, (people_segmentation[0][-1] - 27315) / 100, (people_segmentation[0][0] - 27315) / 100)
         c_mean = (sum(people_segmentation[0])/len(people_segmentation[0]) - 27315) / 100
-        if c_mean > (sum(people_segmentation[-1])/len(people_segmentation[-1]) - 27315) / 100 + 2:    #Separation value from floor
+        if c_mean > (sum(people_segmentation[-1])/len(people_segmentation[-1]) - 27315) / 100 + 2:    #This part*** +2(2C) is Separation value from floor
             detected = True
         else:
             detected = False
@@ -132,5 +132,6 @@ class ThermalImageProcessor(object):
     
 if __name__ == '__main__':
     rospy.init_node('thermal_image_processor', anonymous=True)
-    ThermalImageProcessor()
-    rospy.spin()
+    while not rospy.is_shutdown():
+        ThermalImageProcessor()
+        rospy.spin()

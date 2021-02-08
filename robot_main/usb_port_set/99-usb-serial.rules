@@ -1,0 +1,6 @@
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0042",ATTRS{serial}=="85731303533351519212" ,  SYMLINK+="Motor", MODE="666"
+
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0042",ATTRS{serial}=="8573130353335181E091" ,  SYMLINK+="IR", MODE="666"
+
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740",ATTRS{serial}=="000001010000" ,  SYMLINK+="IMU", MODE="666"
+

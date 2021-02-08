@@ -2,8 +2,18 @@
 #include <ros.h>
 #include <life_msgs/IR.h>
 #include <life_msgs/Status.h>
+#include <life_msgs/LED_SET.h>
+
 #define IR_NUM 5
 #define FILTER_SIZE 10
+
+#define LED_R_1 53
+#define LED_G_1 51
+#define LED_B_1 49
+
+#define LED_B_2 52
+#define LED_G_2 50
+#define LED_R_2 48
 
 float IR_data[2][IR_NUM] {};
 float IR[IR_NUM][FILTER_SIZE];
@@ -14,17 +24,46 @@ int step = 0;
 bool flag = false;
 ros::NodeHandle  nh;
 life_msgs::IR IR_msg;
-life_msgs::Status state;
 ros::Publisher IRpub("/life/IR", &IR_msg);
-ros::Publisher state_pub("/life/Status/IR", &state);
 
+void LEDCb( const life_msgs::LED_SET& msg){
+  digitalWrite(LED_R_1,msg.Step.red);
+  digitalWrite(LED_G_1,msg.Step.green);
+  digitalWrite(LED_B_1,msg.Step.blue);
+  
+  digitalWrite(LED_R_2,msg.Status.red);
+  digitalWrite(LED_G_2,msg.Status.green);
+  digitalWrite(LED_B_2,msg.Status.blue);
+}
+
+ros::Subscriber<life_msgs::LED_SET> sub("/life/LED", &LEDCb );
 void setup() {
-  Timer5.initialize(1000);
+  Timer5.initialize(5000);
   Timer5.attachInterrupt(timer_hander);
   Timer5.start();
+  pinMode(A0,INPUT);
+  pinMode(A1,INPUT);
+  pinMode(A2,INPUT);
+  pinMode(A3,INPUT);
+  pinMode(A4,INPUT);
+  pinMode(LED_R_1,OUTPUT);
+  pinMode(LED_G_1,OUTPUT);
+  pinMode(LED_B_1,OUTPUT);
+
+  pinMode(LED_R_2,OUTPUT);
+  pinMode(LED_G_2,OUTPUT);
+  pinMode(LED_B_2,OUTPUT);
+  digitalWrite(LED_R_1,LOW);
+  digitalWrite(LED_G_1,HIGH);
+  digitalWrite(LED_B_1,HIGH);
+  
+  digitalWrite(LED_R_2,LOW);
+  digitalWrite(LED_G_2,HIGH);
+  digitalWrite(LED_B_2,HIGH);
+  
   nh.initNode();
+  nh.subscribe(sub);
   nh.advertise(IRpub);
-  nh.advertise(state_pub);
 }
 
 void loop() {
@@ -36,12 +75,10 @@ void loop() {
            step++;
            break;
         case 1:
-           low_pass_filter();
+           filter();
            step++;
            break;
         case 2:
-           state.good = true;
-           state_pub.publish(&state);
            IRpub.publish(&IR_msg);
            step ++;
            break;
@@ -55,6 +92,8 @@ void loop() {
      }
   }
 }
+
+
 void ReadIR(){
     IR_pre_index = IR_index;
     IR_index = (IR_index+1)%FILTER_SIZE;
@@ -63,32 +102,6 @@ void ReadIR(){
     IR[2][IR_index] = getDistanceSharp(A2);
     IR[3][IR_index] = getDistanceSharp(A3);
     IR[4][IR_index] = getDistanceSharp(A4);
-
-
-    //HIGH PASS FILTER
-    
-    IR_data[1][0] = 0.88*(IR_data[1][0] + IR[0][IR_index] - IR[0][IR_pre_index]);
-    IR_data[1][1] = 0.88*(IR_data[1][1] + IR[1][IR_index] - IR[1][IR_pre_index]);
-    IR_data[1][2] = 0.88*(IR_data[1][2] + IR[2][IR_index] - IR[2][IR_pre_index]);
-    IR_data[1][3] = 0.88*(IR_data[1][3] + IR[3][IR_index] - IR[3][IR_pre_index]);
-    IR_data[1][4] = 0.88*(IR_data[1][4] + IR[4][IR_index] - IR[4][IR_pre_index]);
-    
-    REMOVE[0] = (IR[0][IR_index] - IR_data[1][0]);
-    REMOVE[1] = (IR[0][IR_index] - IR_data[1][1]);
-    REMOVE[2] = (IR[0][IR_index] - IR_data[1][2]);
-    REMOVE[3] = (IR[0][IR_index] - IR_data[1][3]);
-    REMOVE[4] = (IR[0][IR_index] - IR_data[1][4]);
-     
-    //LOW PASS FILETER
-    
-    IR_data[0][0] = 0.98*IR_data[0][0] + 0.02*REMOVE[0];
-    IR_data[0][1] = 0.98*IR_data[0][1] + 0.02*REMOVE[1];
-    IR_data[0][2] = 0.98*IR_data[0][2] + 0.02*REMOVE[2];
-    IR_data[0][3] = 0.98*IR_data[0][3] + 0.02*REMOVE[3];
-    IR_data[0][4] = 0.98*IR_data[0][4] + 0.02*REMOVE[4];
-    
-    
-
 }
 float getDistanceSharp(int PIN){
   float sensorValue = analogRead(PIN);
@@ -103,8 +116,29 @@ void timer_hander(){
   flag = true;
 }
 
-void low_pass_filter(){
-  for(int i = 0 ; i< IR_NUM;i++)  
-    IR_msg.ir[i] = (IR_data[0][i]);
-  
+void filter(){
+  //HIGH PASS FILTER
+    
+    IR_data[1][0] = 0.88*(IR_data[1][0] + IR[0][IR_index] - IR[0][IR_pre_index]);
+    IR_data[1][1] = 0.88*(IR_data[1][1] + IR[1][IR_index] - IR[1][IR_pre_index]);
+    IR_data[1][2] = 0.88*(IR_data[1][2] + IR[2][IR_index] - IR[2][IR_pre_index]);
+    IR_data[1][3] = 0.88*(IR_data[1][3] + IR[3][IR_index] - IR[3][IR_pre_index]);
+    IR_data[1][4] = 0.88*(IR_data[1][4] + IR[4][IR_index] - IR[4][IR_pre_index]);
+    
+    REMOVE[0] = (IR[0][IR_index] - IR_data[1][0]);
+    REMOVE[1] = (IR[1][IR_index] - IR_data[1][1]);
+    REMOVE[2] = (IR[2][IR_index] - IR_data[1][2]);
+    REMOVE[3] = (IR[3][IR_index] - IR_data[1][3]);
+    REMOVE[4] = (IR[4][IR_index] - IR_data[1][4]);
+     
+    //LOW PASS FILETER
+    
+    IR_data[0][0] = 0.9*IR_data[0][0] + 0.1*REMOVE[0];
+    IR_data[0][1] = 0.9*IR_data[0][1] + 0.1*REMOVE[1];
+    IR_data[0][2] = 0.9*IR_data[0][2] + 0.1*REMOVE[2];
+    IR_data[0][3] = 0.9*IR_data[0][3] + 0.1*REMOVE[3];
+    IR_data[0][4] = 0.9*IR_data[0][4] + 0.1*REMOVE[4];
+  for(int i = 0 ; i< IR_NUM;i++) {
+    IR_msg.ir[i] = IR_data[0][i];
+  }
 }

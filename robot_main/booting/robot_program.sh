@@ -3,9 +3,8 @@ source /opt/ros/noetic/setup.bash
 source /home/ubuntu/life_ws/devel/setup.bash
 
 
-./home/ubuntu/life_ws/src/booting/sensor_test.sh &
+roslaunch robot_core robot_main.launch 
 
-rosrun gps_n_lora gps_n_lora_node 
 
 
 

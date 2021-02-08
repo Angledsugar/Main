@@ -1,15 +1,8 @@
 <launch>
  <group ns="life">
-  <node name="IR" pkg="rosserial_python" type="serial_node.py" output="screen" args="/dev/ttyACM0">
-    <param name="video_device" value="/dev/video0" />
-    <param name="image_width" value="640" />
-    <param name="image_height" value="480" />
-    <param name="pixel_format" value="mjpeg" />
-    <param name="camera_frame_id" value="left_camera_1" />
-    <param name="camera_name" value="left_camera_1"/>
-    <param name="io_method" value="mmap"/>
+  <node name="IR" pkg="rosserial_python" type="serial_node.py" output="screen" args="_port:=/dev/IR" respawn="true">
   </node>
-  <node name="BLDC" pkg="rosserial_python" type="serial_node.py" output="screen" args="/dev/ttyACM1">
+  <node name="BLDC" pkg="rosserial_python" type="serial_node.py" output="screen" args="_port:=/dev/Motor" respawn="true">
   </node>
  </group>
 </launch>

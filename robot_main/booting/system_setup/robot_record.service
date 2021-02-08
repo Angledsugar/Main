@@ -1,0 +1,10 @@
+[Unit]
+Description=RECORD SENSOR
+After=robot_run.service 
+
+[Service]
+ExecStart=/home/ubuntu/life_ws/src/robot_main/booting/robot_record.sh
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

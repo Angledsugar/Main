@@ -4,9 +4,8 @@ Life::Life(ros::NodeHandle& nh) : _nh(nh){
 	_imu = _nh.subscribe("/life/imu", 1,&Life::Imu_CB,this);
 	_cam = _nh.subscribe("/life/Cam", 1,&Life::Cam_CB,this);
 	_ir = _nh.subscribe("/life/IR", 1,&Life::IR_CB,this);
-	_st_cam = _nh.subscribe("/life/Status/Cam", 1,&Life::ST_IR_CB,this);
-	_st_ir = _nh.subscribe("/life/Status/IR", 1,&Life::ST_IR_CB,this);
-	_st_motor = _nh.subscribe("/life/Status/Motor", 1,&Life::ST_IR_CB,this);
+	_st_cam = _nh.subscribe("/life/Status/Cam", 1,&Life::ST_Cam_CB,this);
+	_st_motor = _nh.subscribe("/life/Status/Motor", 1,&Life::ST_Motor_CB,this);
 	_std_vector.x = 0;
 	_std_vector.y = 0;
 	_std_vector.z = 1;
@@ -23,13 +22,13 @@ float Life::get_force(int mode){
 		force = (_roted_lin_acc.x + _roted_lin_acc.y + _roted_lin_acc.z)*6.5;	
 	}
 	else if(mode == X_FORCE){
-		force = _roted_lin_acc.x*6.5;
+		force = _roted_lin_acc.x*ROBOT_MASS;
 	}
 	else if(mode == Y_FORCE){
-		force = _roted_lin_acc.y*6.5;
+		force = _roted_lin_acc.y*ROBOT_MASS;
 	}
 	else if(mode == Z_FORCE){
-		force = _roted_lin_acc.z*6.5;
+		force = _roted_lin_acc.z*ROBOT_MASS;
 	}
 	return force;
 };
@@ -55,11 +54,9 @@ bool Life::is_close_person(){
 
 bool Life::is_sensor_good(int mode){
 	if(mode == ALL_SENSOR)
-		return _is_good_ir & _is_good_cam & _is_good_motor;
+		return  _is_good_cam & _is_good_motor;
 	else if(mode == CAM)
 		return _is_good_cam;
-	else if(mode == IR)
-		return _is_good_ir;
 	else if(mode == MOTOR)
 		return _is_good_motor;
 	else
@@ -93,14 +90,11 @@ void Life::Cam_CB(const life_msgs::Cam &msg){
 void Life::IR_CB(const life_msgs::IR &msg){
 	_is_close = false;
 	for(int i=0;i<IR_NUM;i++){
-		if(msg.ir[i] < 500)
+		if(msg.ir[i] < 800)
 			_is_close = true;
 	}
 }
 
-void Life::ST_IR_CB(const life_msgs::Status &msg){
-	_is_good_ir = msg.good;
-}
 void Life::ST_Cam_CB(const life_msgs::Status &msg){
 	_is_good_cam = msg.good;
 }
