@@ -8,11 +8,13 @@ int main(int argc,char** argv){
 	ros::NodeHandle nh;
 	LIFE::Life life(nh);
 	LIFE::Filter filter(0.7);
-	LIFE::PID angle_pid(0.4,0,0),linear_pid(1.2,0,0);
+	LIFE::PID angle_pid(0.2,0,0),linear_pid(0.6,0,0);
 	LIFE::Motor motor(nh);
 	LIFE::StateLed led(nh);
 	angle_pid.init(90,0);
+	angle_pid.set_limit(30);
 	linear_pid.init(30,0);
+	linear_pid.set_limit(40);
 	enum State{READY ,TURN_ON, DROPPED ,GO , CLOSE , GRAPPED};
 	State state = READY;
 	ROS_INFO("ROBOT STATE : READY");

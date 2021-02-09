@@ -15,6 +15,10 @@ float PID::calculate(float now){
 	else if(_I_gain < -_I_gain_max)
 		_I_gain = -_I_gain_max;
 	_err_pre = _err;
+	if((_P_gain+_I_gain+_D_gain) > _limit)
+		return _limit;
+	else if((_P_gain+_I_gain+_D_gain) < -_limit)
+		return -_limit;
 	return _P_gain+_I_gain+_D_gain;
 };
 
@@ -26,4 +30,8 @@ void PID::set_target(float target){
 void PID::init(float max, float min){
 	_min = min;
 	_max = max;
+}
+
+void PID::set_limit(float limit){
+	_limit = limit;
 }
